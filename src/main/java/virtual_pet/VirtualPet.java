@@ -1,83 +1,96 @@
 package virtual_pet;
 
-public class VirtualPet {
-
+public abstract class VirtualPet {
 
     private String name;
-    private int hunger;
-    private int thirstLevel;
-    private boolean thirst;
-    private int energy;
+    private int hunger = 2;
+    private int thirst = 2;
+    private int boredom = 2;
+    private boolean isThisPetDead = false;
 
-    public VirtualPet(String name, int hunger, int thirstLevel, boolean thirst, int energy) {
+
+    public VirtualPet(String name, int hunger, int thirst, int boredom) {
         this.name = name;
         this.hunger = hunger;
-        this.thirstLevel = thirstLevel;
         this.thirst = thirst;
-        this.energy = energy;
+        this.boredom = boredom;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getHunger() {
+        return hunger;
+    }
+
+    public int getThirst() {
+        return thirst;
+    }
+
+    public int getBoredom() {
+        return boredom;
+    }
+
+    public boolean getIsThisPetDead() {
+        return isThisPetDead;
+    }
+
+    public VirtualPet(String name) {
+        this.name = name;
     }
 
 
-    public void getName() {
-        System.out.println(name);
-    }
 
-    public void getHunger() {
-        System.out.println("My hunger is: " + hunger);
-    }
-
-    public void getEnergy() {
-        System.out.println(energy);
-    }
-    public void getThirstLevel() {
-        System.out.println("My thirst level is: " + thirstLevel);
-    }
-
-    public void thirst() {
-        if (thirstLevel > 5 ) {
-            System.out.println("I am thirsty could you get me some please human");
-        }
-        else {
-            System.out.println("I'm good don't need any water");
+    public void feed() {
+        this.hunger -= 10;
+        if (this.hunger < 0) {
+            this.hunger = 0;
         }
     }
 
     public void water() {
-        if(thirstLevel > 5){
-            thirstLevel = Math.max(1, thirstLevel -9);
-            System.out.println("Thanks Human I needed that");
-        }
-        else {
-            System.out.println("I'm good on water no thanks human");
-        }
-
-    }
-
-    public void feed() {
-        if (hunger > 5) {
-            System.out.println("Thanks human that was delicious");
-            hunger = 1;
-            energy = energy + 8;
-        }
-        else {
-            System.out.println("No thanks human I'm not hungry yet.");
+        this.thirst -= 10;
+        if (this.thirst < 0) {
+            this.thirst = 0;
         }
     }
 
     public void run() {
-        if (energy > 2  && hunger < 6) {
-            hunger = Math.min(10, hunger + 2);
-            energy = Math.max(0, energy - 7);
-            System.out.println("That was fun did you see all those squirrels, I almost got one!!!");
-        }
-        else {
-            System.out.println("I'm tuckered out maybe some food to help replenish!");
+        this.boredom -= 10;
+        if (this.boredom < 0) {
+            this.boredom = 0;
         }
     }
-    public void tick(){
-        hunger = Math.min(10, hunger + 1);
-        energy = Math.min(10, energy + 1);
-        thirstLevel = Math.min(10, thirstLevel + 1);
+
+    public void tick() {
+        this.hunger += 1;
+        this.thirst += 1;
+        this.boredom += 1;
+        if (this.hunger > 10 || this.thirst > 10 || this.boredom > 10) {
+            this.isThisPetDead = true;
+        }
+    }
+
+    public String formatPetNameWithSpaces() {
+        if (this.name.length() == 16) {
+            return this.name;
+        } else if (this.name.length() < 16) {
+            while (this.name.length() < 16) {
+                this.name += " ";
+            }
+        } else {
+            this.name = this.name.substring(0, 16);
+        }
+        return this.name;
+    }
+
+    public String returnStatus() {
+        return "\n" + formatPetNameWithSpaces() + " | hunger = " + getHunger() + " | thirst = " + getThirst() + " | boredom = " + getBoredom();
+    }
+
+    @Override
+    public String toString() {
+        return name + " " + hunger + " " + thirst + " " + boredom;
     }
 }
-
